@@ -8,6 +8,8 @@ This module is **optional** and runs beside the app. It gives you:
 
 No changes to the Django app.
 
+⚠️ **Security Note**: Change all default passwords (`change-me`) in `docker-compose.yml` before production use. Set your Stripe API keys securely.
+
 ## Quick start
 1) Install Docker Desktop (Windows).
 2) Open PowerShell in this folder: `integrations/booking-stack/`

@@ -1,0 +1,46 @@
+services:
+  db:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_ROOT_PASSWORD: change-me
+      MARIADB_DATABASE: easyappt
+      MARIADB_USER: eauser
+      MARIADB_PASSWORD: change-me
+    volumes:
+      - dbdata:/var/lib/mysql
+
+  easyappointments:
+    image: alextselegidis/easyappointments:latest
+    restart: unless-stopped
+    depends_on: [db]
+    environment:
+      DB_HOST: db
+      DB_NAME: easyappt
+      DB_USERNAME: eauser
+      DB_PASSWORD: change-me
+      BASE_URL: http://localhost:8080
+    ports:
+      - "8080:80"
+
+  nodered:
+    image: nodered/node-red:latest
+    restart: unless-stopped
+    environment:
+      TZ: Australia/Brisbane
+      STRIPE_API_KEY: ""            # set after pull (sk_live_...)
+      STRIPE_WEBHOOK_SECRET: ""     # set after pull (whsec_...)
+      EA_DB_HOST: db
+      EA_DB_NAME: easyappt
+      EA_DB_USER: eauser
+      EA_DB_PASS: change-me
+    depends_on: [db]
+    ports:
+      - "1880:1880"
+    volumes:
+      - nodereddata:/data
+      - ./nodered/flows.json:/data/flows.json
+
+volumes:
+  dbdata:
+  nodereddata:
